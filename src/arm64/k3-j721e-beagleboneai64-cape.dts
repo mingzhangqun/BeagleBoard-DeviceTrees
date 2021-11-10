@@ -27,18 +27,30 @@
 		compatible = "gpio-keys";
 		autorepeat;
 		pinctrl-names = "default";
-		pinctrl-0 = <&sw_pwr_pins_default>;
+		pinctrl-0 = <&sw_pwr_pins_default &cape_btn_pins_default>;
 		sw2: sw2 {
 			label = "GPIO Key USER2";
 			linux,code = <BTN_0>;
 			gpios = <&wkup_gpio0 4 GPIO_ACTIVE_LOW>;
+		};
+
+		cape_btn0: cape_btn0 {
+			label = "CAPE GPIO Key USER0";
+			linux,code = <BTN_1>;
+			gpios = <&main_gpio1 12 GPIO_ACTIVE_LOW>;
+		};
+
+		cape_btn1: cape_btn1 {
+			label = "CAPE GPIO Key USER1";
+			linux,code = <BTN_2>;
+			gpios = <&main_gpio1 0 GPIO_ACTIVE_LOW>;
 		};
 	};
 
 	gpio_leds: gpio-leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
-		pinctrl-0 = <&led_pins_default>;
+		pinctrl-0 = <&led_pins_default &cape_led_pins_default>;
 
 		usr_led0: usr_led0 {
 			label = "beaglebone:green:usr0";
@@ -70,6 +82,24 @@
 			label = "beaglebone:green:usr4";
 			linux,default-trigger = "netdev";
 			gpios = <&main_gpio0 109 GPIO_ACTIVE_HIGH>;
+		};
+
+		cape_led0: cape_led0 {
+			label = "beaglebone:green:cape0";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 93 GPIO_ACTIVE_HIGH>;
+		};
+
+		cape_led1: cape_led1 {
+			label = "beaglebone:green:cape1";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 94 GPIO_ACTIVE_HIGH>;
+		};
+
+		cape_led3: cape_led3 {
+			label = "beaglebone:green:cape3";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 1 GPIO_ACTIVE_HIGH>;
 		};
 	};
 
@@ -200,6 +230,21 @@
 };
 
 &main_pmx0 {
+	cape_btn_pins_default: cape_btn_pins_default {
+		pinctrl-single,pins = <
+			J721E_IOPAD(0x234, PIN_INPUT, 7) /* (U3) EXT_REFCLK1.GPIO1_12 -- BTN1 */
+			J721E_IOPAD(0x204, PIN_INPUT, 7) /* (AD5) UART1_RTSn.GPIO1_0  -- BTN2 */
+		>;
+	};
+
+	cape_led_pins_default: cape_led_pins_default {
+		pinctrl-single,pins = <
+			J721E_IOPAD(0x178, PIN_OUTPUT, 7) /* (U27) RGMII5_RD3.GPIO0_93 -- LED1 */
+			J721E_IOPAD(0x17c, PIN_OUTPUT, 7) /* (U24) RGMII5_RD2.GPIO0_94 -- LED2 */
+			J721E_IOPAD(0x4, PIN_OUTPUT, 7) /* (AC23) PRG1_PRU0_GPO0.GPIO0_1 -- LED4 */
+		>;
+	};
+
 	led_pins_default: led-pins-default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x184, PIN_INPUT, 7) /* (T23) RGMII5_RD0.GPIO0_96 */
@@ -290,10 +335,18 @@
 		>;
 	};
 
+	main_i2c6_pins_default: main-i2c6-pins-default {
+		pinctrl-single,pins = <
+			J721E_IOPAD(0x1d0, PIN_INPUT_PULLUP, 2) /* (AA3) SPI0_D1.I2C6_SCL */
+			J721E_IOPAD(0x1e4, PIN_INPUT_PULLUP, 2) /* (Y2) SPI1_D1.I2C6_SDA */
+		>;
+	};
+
 	main_spi6_pins_default: main-spi6-pins-default {
 		pinctrl-single,pins = <
-			J721E_IOPAD(0x74, PIN_OUTPUT, 4) /* (AC21) PRG1_PRU1_GPO7.SPI6_CS0 */
-			J721E_IOPAD(0x28, PIN_OUTPUT, 4) /* (AG20) PRG1_PRU0_GPO9.SPI6_CS1 */
+			J721E_IOPAD(0x74, PIN_OUTPUT, 7) /* (AC21) PRG1_PRU1_GPO7.GPIO0_28 -- CS1 */
+			J721E_IOPAD(0x28, PIN_OUTPUT, 7) /* (AG20) PRG1_PRU0_GPO9.GPIO0_10 -- CS2*/
+			J721E_IOPAD(0x200, PIN_OUTPUT, 7) /* (AC4) UART1_CTSn.GPIO0_127 -- CS3 */
 			J721E_IOPAD(0x9c, PIN_OUTPUT, 4) /* (AC22) PRG1_PRU1_GPO17.SPI6_CLK */
 			J721E_IOPAD(0xa0, PIN_OUTPUT, 4) /* (AJ22) PRG1_PRU1_GPO18.SPI6_D0 */
 			J721E_IOPAD(0xa4, PIN_INPUT, 4) /* (AH22) PRG1_PRU1_GPO19.SPI6_D1 */
@@ -460,6 +513,7 @@
 	BONE_PIN(P8_22, gpio,      P8_22(PIN_OUTPUT, 7))
 	BONE_PIN(P8_22, gpio_pu,   P8_22(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_22, gpio_pd,   P8_22(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_22, uart2_rx,  P8_22(PIN_INPUT, 14))
 
 	BONE_PIN(P8_23, default,   P8_23(PIN_INPUT, 7))
 	BONE_PIN(P8_23, pruout,    P8_23(PIN_OUTPUT, 0))
@@ -502,6 +556,7 @@
 	BONE_PIN(P8_28, gpio,      P8_28(PIN_OUTPUT, 7))
 	BONE_PIN(P8_28, gpio_pu,   P8_28(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_28, gpio_pd,   P8_28(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_28, uart8_rx,  P8_28(PIN_INPUT, 14))
 
 	BONE_PIN(P8_29, default,   P8_29(PIN_INPUT, 7))
 	BONE_PIN(P8_29, pruout,    P8_29(PIN_OUTPUT, 0))
@@ -509,6 +564,7 @@
 	BONE_PIN(P8_29, gpio,      P8_29(PIN_OUTPUT, 7))
 	BONE_PIN(P8_29, gpio_pu,   P8_29(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_29, gpio_pd,   P8_29(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_29, uart8_tx,  P8_29(PIN_OUTPUT, 14))
 
 	BONE_PIN(P8_30, default,   P8_30(PIN_INPUT, 7))
 	BONE_PIN(P8_30, pruout,    P8_30(PIN_OUTPUT, 0))
@@ -544,6 +600,7 @@
 	BONE_PIN(P8_34, gpio,      P8_34(PIN_OUTPUT, 7))
 	BONE_PIN(P8_34, gpio_pu,   P8_34(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_34, gpio_pd,   P8_34(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_34, uart2_tx,  P8_34(PIN_OUTPUT, 14))
 
 	BONE_PIN(P8_35, default,   P8_35A(PIN_INPUT, 7) P8_35B(PIN_INPUT, 7))
 	BONE_PIN(P8_35, pruout,    P8_35A(PIN_OUTPUT, 0) P8_35B(PIN_INPUT, 7))
@@ -652,25 +709,25 @@
 /*			J721E_IOPAD(0x164, PIN_INPUT, 7)*/ /* (V29) RGMII5_TD2.GPIO0_88 */
 			J721E_IOPAD(0x134, PIN_INPUT, 7) /* (AF26) PRG0_PRU1_GPO13.GPIO0_76 */
 			J721E_IOPAD(0x7c, PIN_INPUT, 7) /* (AF21) PRG1_PRU1_GPO9.GPIO0_30 */
-			J721E_IOPAD(0x14, PIN_INPUT, 7) /* (AH23) PRG1_PRU0_GPO4.GPIO0_5 */
+/*			J721E_IOPAD(0x14, PIN_INPUT, 7)*/ /* (AH23) PRG1_PRU0_GPO4.GPIO0_5 */
 			J721E_IOPAD(0x80, PIN_INPUT, 7) /* (AB23) PRG1_PRU1_GPO10.GPIO0_31 */
-			J721E_IOPAD(0x18, PIN_INPUT, 7) /* (AD20) PRG1_PRU0_GPO5.GPIO0_6 */
+/*			J721E_IOPAD(0x18, PIN_INPUT, 7)*/ /* (AD20) PRG1_PRU0_GPO5.GPIO0_6 */
 			J721E_IOPAD(0x90, PIN_INPUT, 7) /* (AH26) PRG1_PRU1_GPO14.GPIO0_35 */
 			J721E_IOPAD(0xd0, PIN_INPUT, 7) /* (AC27) PRG0_PRU0_GPO8.GPIO0_51 */
 
 			J721E_IOPAD(0x120, PIN_INPUT, 7) /* (AA28) PRG0_PRU1_GPO8.GPIO0_71 */
-			J721E_IOPAD(0x124, PIN_INPUT, 7) /* (Y24) PRG0_PRU1_GPO9.GPIO0_72 */
-			J721E_IOPAD(0x128, PIN_INPUT, 7) /* (AA25) PRG0_PRU1_GPO10.GPIO0_73 */
-			J721E_IOPAD(0x12c, PIN_INPUT, 7) /* (AG26) PRG0_PRU1_GPO11.GPIO0_74 */
+/*			J721E_IOPAD(0x124, PIN_INPUT, 7)*/ /* (Y24) PRG0_PRU1_GPO9.GPIO0_72 */
+/*			J721E_IOPAD(0x128, PIN_INPUT, 7)*/ /* (AA25) PRG0_PRU1_GPO10.GPIO0_73 */
+/*			J721E_IOPAD(0x12c, PIN_INPUT, 7)*/ /* (AG26) PRG0_PRU1_GPO11.GPIO0_74 */
 
 			J721E_IOPAD(0x84, PIN_INPUT, 7) /* (AJ25) PRG1_PRU1_GPO11.GPIO0_32 */
 			J721E_IOPAD(0x100, PIN_INPUT, 7) /* (AE29) PRG0_PRU1_GPO0.GPIO0_63 */
-			J721E_IOPAD(0x6c, PIN_INPUT, 7) /* (AG21) PRG1_PRU1_GPO5.GPIO0_26 */
-			J721E_IOPAD(0x104, PIN_INPUT, 7) /* (AD28) PRG0_PRU1_GPO1.GPIO0_64 */
+/*			J721E_IOPAD(0x6c, PIN_INPUT, 7)*/ /* (AG21) PRG1_PRU1_GPO5.GPIO0_26 */
+/*			J721E_IOPAD(0x104, PIN_INPUT, 7)*/ /* (AD28) PRG0_PRU1_GPO1.GPIO0_64 */
 
 			J721E_IOPAD(0x68, PIN_INPUT, 7) /* (AH24) PRG1_PRU1_GPO4.GPIO0_25 */
 			J721E_IOPAD(0x1c0, PIN_INPUT, 7) /* (AA2) SPI0_CS0.GPIO0_111 */
-			J721E_IOPAD(0x1c, PIN_INPUT, 7) /* (AD22) PRG1_PRU0_GPO6.GPIO0_7 */
+/*			J721E_IOPAD(0x1c, PIN_INPUT, 7)*/ /* (AD22) PRG1_PRU0_GPO6.GPIO0_7 */
 
 			J721E_IOPAD(0x64, PIN_INPUT, 7) /* (AD23) PRG1_PRU1_GPO3.GPIO0_24 */
 			J721E_IOPAD(0x1d4, PIN_INPUT, 7) /* (Y3) SPI1_CS0.GPIO0_116 */
@@ -694,7 +751,7 @@
 
 	main_p9_pins_default: main-p9-pins-default {
 		pinctrl-single,pins = <
-			J721E_IOPAD(0x4, PIN_INPUT, 7) /* (AC23) PRG1_PRU0_GPO0.GPIO0_1 */
+/*			J721E_IOPAD(0x4, PIN_INPUT, 7)*/ /* (AC23) PRG1_PRU0_GPO0.GPIO0_1 */
 			J721E_IOPAD(0xb8, PIN_INPUT, 7) /* (AE27) PRG0_PRU0_GPO2.GPIO0_45 */
 			J721E_IOPAD(0x8, PIN_INPUT, 7) /* (AG22) PRG1_PRU0_GPO1.GPIO0_2 */
 /*			J721E_IOPAD(0x178, PIN_INPUT, 7)*/ /* (U27) RGMII5_RD3.GPIO0_93 */
@@ -702,9 +759,9 @@
 /*			J721E_IOPAD(0x17c, PIN_INPUT, 7)*/ /* (U24) RGMII5_RD2.GPIO0_94 */
 
 /*			J721E_IOPAD(0x74, PIN_INPUT, 7)*/ /* (AC21) PRG1_PRU1_GPO7.GPIO0_28 */
-			J721E_IOPAD(0x1d0, PIN_INPUT, 7) /* (AA3) SPI0_D1.GPIO0_115 */
+/*			J721E_IOPAD(0x1d0, PIN_INPUT, 7)*/ /* (AA3) SPI0_D1.GPIO0_115 */
 /*			J721E_IOPAD(0xa4, PIN_INPUT, 7)*/ /* (AH22) PRG1_PRU1_GPO19.GPIO0_40 */
-			J721E_IOPAD(0x1e4, PIN_INPUT, 7) /* (Y2) SPI1_D1.GPIO0_120 */
+/*			J721E_IOPAD(0x1e4, PIN_INPUT, 7)*/ /* (Y2) SPI1_D1.GPIO0_120 */
 
 			J721E_IOPAD(0x208, PIN_INPUT, 7) /* (W5) MCAN0_RX.GPIO1_1 */
 			J721E_IOPAD(0x13c, PIN_INPUT, 7) /* (AF29) PRG0_PRU1_GPO15.GPIO0_78 */
@@ -720,7 +777,7 @@
 			J721E_IOPAD(0x1e0, PIN_INPUT, 7) /* (Y5) SPI1_D0.GPIO0_119 */
 			J721E_IOPAD(0x34, PIN_INPUT, 7) /* (AJ24) PRG1_PRU0_GPO12.GPIO0_13 */
 
-			J721E_IOPAD(0x200, PIN_INPUT, 7) /* (AC4) UART1_CTSn.GPIO0_127 */
+/*			J721E_IOPAD(0x200, PIN_INPUT, 7)*/ /* (AC4) UART1_CTSn.GPIO0_127 */
 /*			J721E_IOPAD(0x1a4, PIN_INPUT, 7)*/ /* (W26) RGMII6_RXC.GPIO0_104 */
 			J721E_IOPAD(0x1dc, PIN_INPUT, 7) /* (Y1) SPI1_CLK.GPIO0_118 */
 			J721E_IOPAD(0x30, PIN_INPUT, 7) /* (AF24) PRG1_PRU0_GPO11.GPIO0_12 */
@@ -733,7 +790,7 @@
 			J721E_IOPAD(0xd8, PIN_INPUT, 7) /* (AB25) PRG0_PRU0_GPO10.GPIO0_53 */
 			J721E_IOPAD(0x238, PIN_INPUT, 7) /* (V6) TIMER_IO0.GPIO1_13 */
 			J721E_IOPAD(0xb4, PIN_INPUT, 7) /* (AE28) PRG0_PRU0_GPO1.GPIO0_44 */
-			J721E_IOPAD(0x234, PIN_INPUT, 7) /* (U3) EXT_REFCLK1.GPIO1_12 */
+/*			J721E_IOPAD(0x234, PIN_INPUT, 7)*/ /* (U3) EXT_REFCLK1.GPIO1_12 */
 			J721E_IOPAD(0xd4, PIN_INPUT, 7) /* (AB26) PRG0_PRU0_GPO9.GPIO0_52 */
 
 			J721E_IOPAD(0xcc, PIN_INPUT, 7) /* (AC28) PRG0_PRU0_GPO7.GPIO0_50 */
@@ -743,7 +800,7 @@
 			J721E_IOPAD(0xec, PIN_INPUT, 7) /* (AG27) PRG0_PRU0_GPO15.GPIO0_58 */
 			J721E_IOPAD(0xdc, PIN_INPUT, 7) /* (AJ28) PRG0_PRU0_GPO11.GPIO0_54 */
 			J721E_IOPAD(0x148, PIN_INPUT, 7) /* (AA26) PRG0_PRU1_GPO18.GPIO0_81 */
-			J721E_IOPAD(0x204, PIN_INPUT, 7) /* (AD5) UART1_RTSn.GPIO1_0 */
+/*			J721E_IOPAD(0x204, PIN_INPUT, 7)*/ /* (AD5) UART1_RTSn.GPIO1_0 */
 			J721E_IOPAD(0x1f0, PIN_INPUT, 7) /* (AC2) UART0_CTSn.GPIO0_123 */
 			J721E_IOPAD(0x4c, PIN_INPUT, 7) /* (AJ21) PRG1_PRU0_GPO17.GPIO0_18 */
 		>;
@@ -766,13 +823,6 @@
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x16c, PIN_OUTPUT, 6) /* (U28) RGMII5_TD0.EHRPWM1_A */
 			J721E_IOPAD(0x170, PIN_OUTPUT, 6) /* (U29) RGMII5_TXC.EHRPWM1_B */
-		>;
-	};
-
-	ehrpwm2_pins_default: ehrpwm2_pins_default {
-		pinctrl-single,pins = <
-			J721E_IOPAD(0x178, PIN_OUTPUT, 6) /* (U27) RGMII5_RD3.EHRPWM2_A */
-			J721E_IOPAD(0x17c, PIN_OUTPUT, 6) /* (U24) RGMII5_RD2.EHRPWM2_B */
 		>;
 	};
 
@@ -893,6 +943,10 @@
 	power-domains = <&k3_pds 146 TI_SCI_PD_SHARED>;
 };
 
+&main_uart2 {
+	power-domains = <&k3_pds 279 TI_SCI_PD_SHARED>;
+};
+
 &main_uart3 {
 	/* UART not brought out */
 	status = "disabled";
@@ -914,8 +968,7 @@
 };
 
 &main_uart8 {
-	/* UART not brought out */
-	status = "disabled";
+	power-domains = <&k3_pds 154 TI_SCI_PD_SHARED>;
 };
 
 &main_uart9 {
@@ -945,19 +998,19 @@
 		&P8_19_pwm_pin
 		&P8_20_pruout_pin
 		&P8_21_pruout_pin
-		&P8_22_pruout_pin
+		&P8_22_uart2_rx_pin
 		&P8_23_pruout_pin
-		&P8_24_pruout_pin
+		&P8_24_gpio_pin
 		&P8_25_pruout_pin
 		&P8_26_pruout_pin
 		&P8_27_pruout_pin
-		&P8_28_pruout_pin
-		&P8_29_pruout_pin
-		&P8_30_pruout_pin
+		&P8_28_uart8_rx_pin
+		&P8_29_uart8_tx_pin
+		&P8_30_gpio_pin
 		&P8_31_pruout_pin
-		&P8_32_pruout_pin
+		&P8_32_gpio_pin
 		&P8_33_pruout_pin
-		&P8_34_pruout_pin
+		&P8_34_uart2_tx_pin
 		&P8_35_pruout_pin
 		&P8_36_pruout_pin
 		&P8_37_pruout_pin
@@ -1200,31 +1253,38 @@
 	};
 };
 
+&main_i2c6 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c6_pins_default>;
+	clock-frequency = <400000>;
+};
+
 &main_spi6 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_spi6_pins_default>;
-	ti,spi-num-cs = <2>;
+	ti,spi-num-cs = <3>;
 	ti,pindir-d0-out-d1-in;
+	cs-gpios = <&main_gpio0 28 GPIO_ACTIVE_LOW>,
+		<&main_gpio0 10 GPIO_ACTIVE_LOW>,
+		<&main_gpio0 127 GPIO_ACTIVE_LOW>;
 
-	spidev0: spidev@0{
-		compatible = "spidev";
+	pressure@0 {
+		compatible = "bosch,bmp280";
 		reg = <0>;	/* CE0 */
-		#address-cells = <1>;
-		#size-cells = <0>;
-		spi-max-frequency = <125000000>;
+		spi-max-frequency = <5000000>;
 	};
 
-	spidev1: spidev@1{
-		compatible = "spidev";
+	imu@1 {
+		compatible = "st,lsm6ds3tr-c";
 		reg = <1>;	/* CE1 */
-		#address-cells = <1>;
-		#size-cells = <0>;
-		spi-max-frequency = <125000000>;
+		spi-max-frequency = <5000000>;
 	};
-};
 
-&main_i2c6 {
-	status = "disabled";
+	magn@2 {
+		compatible = "bosch,bmm150_magn";
+		reg = <2>;	/* CE2 */
+		spi-max-frequency = <5000000>;
+	};
 };
 
 &mcu_cpsw {
@@ -1407,11 +1467,6 @@
 };
 
 &pcie3_ep {
-	status = "disabled";
-};
-
-/* uart2 assigned to cpsw9g eth-switch fw running on remote CPU core */
-&main_uart2 {
 	status = "disabled";
 };
 
