@@ -922,7 +922,7 @@
 		&P9_24_pruout_pin
 		&P9_25_gpio_pin
 */
-		&main_p9_pins_default
+/*		&main_p9_pins_default*/
 	>;
 };
 
