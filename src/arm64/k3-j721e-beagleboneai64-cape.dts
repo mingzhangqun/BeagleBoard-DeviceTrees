@@ -762,12 +762,40 @@
 	BONE_PIN(P9_30, gpio_pu,   P9_30A(PIN_INPUT, 7) P9_30B(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_30, gpio_pd,   P9_30A(PIN_INPUT, 7) P9_30B(PIN_OUTPUT_PULLDOWN, 7))
 
+	BONE_PIN(P9_33, default,   P9_33B(PIN_INPUT, 7))
+	BONE_PIN(P9_33, pruout,    P9_33B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_33, pruin,     P9_33B(PIN_INPUT, 1))
+	BONE_PIN(P9_33, gpio,      P9_33B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_33, gpio_pu,   P9_33B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_33, gpio_pd,   P9_33B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_35, default,   P9_35B(PIN_INPUT, 7))
+	BONE_PIN(P9_35, pruout,    P9_35B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_35, pruin,     P9_35B(PIN_INPUT, 1))
+	BONE_PIN(P9_35, gpio,      P9_35B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_35, gpio_pu,   P9_35B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_35, gpio_pd,   P9_35B(PIN_OUTPUT_PULLDOWN, 7))
+
 	BONE_PIN(P9_36, default,   P9_36B(PIN_INPUT, 7))
 	BONE_PIN(P9_36, pruout,    P9_36B(PIN_OUTPUT, 0))
 	BONE_PIN(P9_36, pruin,     P9_36B(PIN_INPUT, 1))
 	BONE_PIN(P9_36, gpio,      P9_36B(PIN_OUTPUT, 7))
 	BONE_PIN(P9_36, gpio_pu,   P9_36B(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_36, gpio_pd,   P9_36B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_37, default,   P9_37B(PIN_INPUT, 7))
+	BONE_PIN(P9_37, pruout,    P9_37B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_37, pruin,     P9_37B(PIN_INPUT, 1))
+	BONE_PIN(P9_37, gpio,      P9_37B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_37, gpio_pu,   P9_37B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_37, gpio_pd,   P9_37B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_38, default,   P9_38B(PIN_INPUT, 7))
+	BONE_PIN(P9_38, pruout,    P9_38B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_38, pruin,     P9_38B(PIN_INPUT, 1))
+	BONE_PIN(P9_38, gpio,      P9_38B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_38, gpio_pu,   P9_38B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_38, gpio_pd,   P9_38B(PIN_OUTPUT_PULLDOWN, 7))
 
 	BONE_PIN(P9_39, default,   P9_39B(PIN_INPUT, 7))
 	BONE_PIN(P9_39, pruout,    P9_39B(PIN_OUTPUT, 0))
@@ -971,17 +999,17 @@
 		&P8_06_gpio_pin
 		&P8_07_default_pin
 		&P8_08_gpio_pin
-		&P8_09_pruout_pin
-		&P8_10_pruout_pin
+		&P8_09_default_pin
+		&P8_10_gpio_pin
 		&P8_11_pruout_pin
 		&P8_12_pruout_pin
 		&P8_13_default_pin
 		&P8_14_pruout_pin
 		&P8_15_default_pin
-		&P8_16_pruout_pin
-		&P8_17_pruout_pin
-		&P8_18_pruout_pin
-		&P8_19_pwm_pin
+		&P8_16_gpio_pin
+		&P8_17_gpio_pin
+		&P8_18_gpio_pin
+		&P8_19_gpio_pin
 		&P8_20_pruout_pin
 		&P8_21_pruout_pin
 		&P8_22_uart2_rx_pin
@@ -993,20 +1021,20 @@
 		&P8_28_uart8_rx_pin
 		&P8_29_uart8_tx_pin
 		&P8_30_gpio_pin
-		&P8_31_pruout_pin
+		&P8_31_default_pin
 		&P8_32_gpio_pin
 		&P8_33_default_pin
 		&P8_34_uart2_tx_pin
 		&P8_35_default_pin
 		&P8_36_pruout_pin
 		&P8_37_pruout_pin
-		&P8_38_pruout_pin
+		&P8_38_gpio_pin
 		&P8_39_pruout_pin
-		&P8_40_pruout_pin
+		&P8_40_gpio_pin
 		&P8_41_pruout_pin
-		&P8_42_pruout_pin
+		&P8_42_gpio_pin
 		&P8_43_pruout_pin
-		&P8_44_pruout_pin
+		&P8_44_gpio_pin
 		&P8_45_pruout_pin
 		&P8_46_pruout_pin
 
@@ -1020,7 +1048,11 @@
 		&P9_28_default_pin
 		&P9_29_default_pin
 		&P9_30_default_pin
+		&P9_33_default_pin
+		&P9_35_default_pin
 		&P9_36_pruout_pin
+		&P9_37_default_pin
+		&P9_38_default_pin
 		&P9_39_default_pin
 		&P9_42_default_pin
 	>;
