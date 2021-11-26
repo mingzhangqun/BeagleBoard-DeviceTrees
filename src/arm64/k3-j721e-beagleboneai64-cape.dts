@@ -789,6 +789,7 @@
 	BONE_PIN(P9_37, gpio,      P9_37B(PIN_OUTPUT, 7))
 	BONE_PIN(P9_37, gpio_pu,   P9_37B(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_37, gpio_pd,   P9_37B(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P9_37, uart4_rx,  P9_37B(PIN_INPUT, 8))
 
 	BONE_PIN(P9_38, default,   P9_38B(PIN_INPUT, 7))
 	BONE_PIN(P9_38, pruout,    P9_38B(PIN_OUTPUT, 0))
@@ -796,6 +797,7 @@
 	BONE_PIN(P9_38, gpio,      P9_38B(PIN_OUTPUT, 7))
 	BONE_PIN(P9_38, gpio_pu,   P9_38B(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_38, gpio_pd,   P9_38B(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P9_38, uart4_tx,  P9_38B(PIN_OUTPUT, 8))
 
 	BONE_PIN(P9_39, default,   P9_39B(PIN_INPUT, 7))
 	BONE_PIN(P9_39, pruout,    P9_39B(PIN_OUTPUT, 0))
@@ -966,6 +968,11 @@
 	status = "disabled";
 };
 
+&main_uart4 {
+	/* UART not brought out */
+	power-domains = <&k3_pds 281 TI_SCI_PD_SHARED>;
+};
+
 &main_uart5 {
 	/* UART not brought out */
 	status = "disabled";
@@ -1051,8 +1058,8 @@
 		&P9_33_default_pin
 		&P9_35_default_pin
 		&P9_36_pruout_pin
-		&P9_37_default_pin
-		&P9_38_default_pin
+		&P9_37_uart4_rx_pin
+		&P9_38_uart4_tx_pin
 		&P9_39_default_pin
 		&P9_42_default_pin
 	>;
