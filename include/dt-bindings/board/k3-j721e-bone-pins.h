@@ -155,7 +155,7 @@
 #define P9_21B(mode, mux) J721E_IOPAD(0x16C, mode, mux)       /* U28 */
 #define P9_22A(mode, mux) J721E_IOPAD(0x09C, mode, mux)       /* AC22 */
 #define P9_22B(mode, mux) J721E_IOPAD(0x170, mode, mux)       /* U29 */
-#define P9_23(mode, mux)  J721E_IOPAD(0x02B, mode, mux)       /* AG20 */
+#define P9_23(mode, mux)  J721E_IOPAD(0x028, mode, mux)       /* AG20 */
 #define P9_24A(mode, mux) J721E_IOPAD(0x1E0, mode, mux)       /* Y5 */
 #define P9_24B(mode, mux) J721E_IOPAD(0x034, mode, mux)       /* AJ24 */
 #define P9_25A(mode, mux) J721E_IOPAD(0x200, mode, mux)       /* AC4 */

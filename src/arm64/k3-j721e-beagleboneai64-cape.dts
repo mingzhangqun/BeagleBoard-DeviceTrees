@@ -27,18 +27,30 @@
 		compatible = "gpio-keys";
 		autorepeat;
 		pinctrl-names = "default";
-		pinctrl-0 = <&sw_pwr_pins_default>;
+		pinctrl-0 = <&sw_pwr_pins_default &cape_btn_pins_default>;
 		sw2: sw2 {
 			label = "GPIO Key USER2";
 			linux,code = <BTN_0>;
 			gpios = <&wkup_gpio0 4 GPIO_ACTIVE_LOW>;
+		};
+
+		cape_btn0: cape_btn0 {
+			label = "CAPE GPIO Key USER0";
+			linux,code = <BTN_1>;
+			gpios = <&main_gpio1 12 GPIO_ACTIVE_LOW>;
+		};
+
+		cape_btn1: cape_btn1 {
+			label = "CAPE GPIO Key USER1";
+			linux,code = <BTN_2>;
+			gpios = <&main_gpio1 0 GPIO_ACTIVE_LOW>;
 		};
 	};
 
 	gpio_leds: gpio-leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
-		pinctrl-0 = <&led_pins_default>;
+		pinctrl-0 = <&led_pins_default &cape_led_pins_default>;
 
 		usr_led0: usr_led0 {
 			label = "beaglebone:green:usr0";
@@ -70,6 +82,24 @@
 			label = "beaglebone:green:usr4";
 			linux,default-trigger = "netdev";
 			gpios = <&main_gpio0 109 GPIO_ACTIVE_HIGH>;
+		};
+
+		cape_led0: cape_led0 {
+			label = "beaglebone:green:cape0";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 93 GPIO_ACTIVE_HIGH>;
+		};
+
+		cape_led1: cape_led1 {
+			label = "beaglebone:green:cape1";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 94 GPIO_ACTIVE_HIGH>;
+		};
+
+		cape_led3: cape_led3 {
+			label = "beaglebone:green:cape3";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 1 GPIO_ACTIVE_HIGH>;
 		};
 	};
 
@@ -200,6 +230,21 @@
 };
 
 &main_pmx0 {
+	cape_btn_pins_default: cape_btn_pins_default {
+		pinctrl-single,pins = <
+			J721E_IOPAD(0x234, PIN_INPUT, 7) /* (U3) EXT_REFCLK1.GPIO1_12 -- BTN1 */
+			J721E_IOPAD(0x204, PIN_INPUT, 7) /* (AD5) UART1_RTSn.GPIO1_0  -- BTN2 */
+		>;
+	};
+
+	cape_led_pins_default: cape_led_pins_default {
+		pinctrl-single,pins = <
+			J721E_IOPAD(0x178, PIN_OUTPUT, 7) /* (U27) RGMII5_RD3.GPIO0_93 -- LED1 */
+			J721E_IOPAD(0x17c, PIN_OUTPUT, 7) /* (U24) RGMII5_RD2.GPIO0_94 -- LED2 */
+			J721E_IOPAD(0x4, PIN_OUTPUT, 7) /* (AC23) PRG1_PRU0_GPO0.GPIO0_1 -- LED4 */
+		>;
+	};
+
 	led_pins_default: led-pins-default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x184, PIN_INPUT, 7) /* (T23) RGMII5_RD0.GPIO0_96 */
@@ -290,10 +335,18 @@
 		>;
 	};
 
+	main_i2c6_pins_default: main-i2c6-pins-default {
+		pinctrl-single,pins = <
+			J721E_IOPAD(0x1d0, PIN_INPUT_PULLUP, 2) /* (AA3) SPI0_D1.I2C6_SCL */
+			J721E_IOPAD(0x1e4, PIN_INPUT_PULLUP, 2) /* (Y2) SPI1_D1.I2C6_SDA */
+		>;
+	};
+
 	main_spi6_pins_default: main-spi6-pins-default {
 		pinctrl-single,pins = <
-			J721E_IOPAD(0x74, PIN_OUTPUT, 4) /* (AC21) PRG1_PRU1_GPO7.SPI6_CS0 */
-			J721E_IOPAD(0x28, PIN_OUTPUT, 4) /* (AG20) PRG1_PRU0_GPO9.SPI6_CS1 */
+			J721E_IOPAD(0x74, PIN_OUTPUT, 7) /* (AC21) PRG1_PRU1_GPO7.GPIO0_28 -- CS1 */
+			J721E_IOPAD(0x28, PIN_OUTPUT, 7) /* (AG20) PRG1_PRU0_GPO9.GPIO0_10 -- CS2*/
+			J721E_IOPAD(0x200, PIN_OUTPUT, 7) /* (AC4) UART1_CTSn.GPIO0_127 -- CS3 */
 			J721E_IOPAD(0x9c, PIN_OUTPUT, 4) /* (AC22) PRG1_PRU1_GPO17.SPI6_CLK */
 			J721E_IOPAD(0xa0, PIN_OUTPUT, 4) /* (AJ22) PRG1_PRU1_GPO18.SPI6_D0 */
 			J721E_IOPAD(0xa4, PIN_INPUT, 4) /* (AH22) PRG1_PRU1_GPO19.SPI6_D1 */
@@ -318,7 +371,7 @@
 #define BONE_PIN(XX,ZZ,QQ) \
 	XX##_##ZZ##_pin: pinmux_##XX##_##ZZ##_pin { pinctrl-single,pins = < QQ >; };
 
-	/* Full P8/P9 header mode definitions */
+	/* Full P8 header mode definitions */
 	/* P8_01 - GND */
 	/* P8_02 - GND */
 	BONE_PIN(P8_03, default,   P8_03(PIN_INPUT, 7))
@@ -367,7 +420,7 @@
 	BONE_PIN(P8_09, default,   P8_09(PIN_INPUT, 7))
 	BONE_PIN(P8_09, pruout,    P8_09(PIN_OUTPUT, 0))
 	BONE_PIN(P8_09, pruin,     P8_09(PIN_INPUT, 1))
-	BONE_PIN(P8_06, gpio,      P8_09(PIN_OUTPUT, 7))
+	BONE_PIN(P8_09, gpio,      P8_09(PIN_OUTPUT, 7))
 	BONE_PIN(P8_09, gpio_pu,   P8_09(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_09, gpio_pd,   P8_09(PIN_OUTPUT_PULLDOWN, 7))
 
@@ -460,6 +513,7 @@
 	BONE_PIN(P8_22, gpio,      P8_22(PIN_OUTPUT, 7))
 	BONE_PIN(P8_22, gpio_pu,   P8_22(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_22, gpio_pd,   P8_22(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_22, uart2_rx,  P8_22(PIN_INPUT, 14))
 
 	BONE_PIN(P8_23, default,   P8_23(PIN_INPUT, 7))
 	BONE_PIN(P8_23, pruout,    P8_23(PIN_OUTPUT, 0))
@@ -502,6 +556,7 @@
 	BONE_PIN(P8_28, gpio,      P8_28(PIN_OUTPUT, 7))
 	BONE_PIN(P8_28, gpio_pu,   P8_28(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_28, gpio_pd,   P8_28(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_28, uart8_rx,  P8_28(PIN_INPUT, 14))
 
 	BONE_PIN(P8_29, default,   P8_29(PIN_INPUT, 7))
 	BONE_PIN(P8_29, pruout,    P8_29(PIN_OUTPUT, 0))
@@ -509,6 +564,7 @@
 	BONE_PIN(P8_29, gpio,      P8_29(PIN_OUTPUT, 7))
 	BONE_PIN(P8_29, gpio_pu,   P8_29(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_29, gpio_pd,   P8_29(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_29, uart8_tx,  P8_29(PIN_OUTPUT, 14))
 
 	BONE_PIN(P8_30, default,   P8_30(PIN_INPUT, 7))
 	BONE_PIN(P8_30, pruout,    P8_30(PIN_OUTPUT, 0))
@@ -537,6 +593,7 @@
 	BONE_PIN(P8_33, gpio,      P8_33A(PIN_OUTPUT, 7) P8_33B(PIN_INPUT, 7))
 	BONE_PIN(P8_33, gpio_pu,   P8_33A(PIN_OUTPUT_PULLUP, 7) P8_33B(PIN_INPUT, 7))
 	BONE_PIN(P8_33, gpio_pd,   P8_33A(PIN_OUTPUT_PULLDOWN, 7) P8_33B(PIN_INPUT, 7))
+	BONE_PIN(P8_33, eqep1_b,   P8_33A(PIN_INPUT, 9) P8_33B(PIN_INPUT, 7))
 
 	BONE_PIN(P8_34, default,   P8_34(PIN_INPUT, 7))
 	BONE_PIN(P8_34, pruout,    P8_34(PIN_OUTPUT, 0))
@@ -544,6 +601,7 @@
 	BONE_PIN(P8_34, gpio,      P8_34(PIN_OUTPUT, 7))
 	BONE_PIN(P8_34, gpio_pu,   P8_34(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_34, gpio_pd,   P8_34(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P8_34, uart2_tx,  P8_34(PIN_OUTPUT, 14))
 
 	BONE_PIN(P8_35, default,   P8_35A(PIN_INPUT, 7) P8_35B(PIN_INPUT, 7))
 	BONE_PIN(P8_35, pruout,    P8_35A(PIN_OUTPUT, 0) P8_35B(PIN_INPUT, 7))
@@ -551,6 +609,7 @@
 	BONE_PIN(P8_35, gpio,      P8_35A(PIN_OUTPUT, 7) P8_35B(PIN_INPUT, 7))
 	BONE_PIN(P8_35, gpio_pu,   P8_35A(PIN_OUTPUT_PULLUP, 7) P8_35B(PIN_INPUT, 7))
 	BONE_PIN(P8_35, gpio_pd,   P8_35A(PIN_OUTPUT_PULLDOWN, 7) P8_35B(PIN_INPUT, 7))
+	BONE_PIN(P8_35, eqep1_a,   P8_35A(PIN_INPUT, 9) P8_35B(PIN_INPUT, 7))
 
 	BONE_PIN(P8_36, default,   P8_36(PIN_INPUT, 7))
 	BONE_PIN(P8_36, pruout,    P8_36(PIN_OUTPUT, 0))
@@ -629,6 +688,132 @@
 	BONE_PIN(P8_46, gpio_pu,   P8_46(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P8_46, gpio_pd,   P8_46(PIN_OUTPUT_PULLDOWN, 7))
 
+	/* Full P9 header mode definitions */
+	/* P9_01 - GND */
+	/* P9_02 - GND */
+	BONE_PIN(P9_12, default,    P9_12(PIN_INPUT, 7))
+	BONE_PIN(P9_12, pruout,     P9_12(PIN_OUTPUT, 0))
+	BONE_PIN(P9_12, pruin,      P9_12(PIN_INPUT, 1))
+	BONE_PIN(P9_12, gpio,       P9_12(PIN_OUTPUT, 7))
+	BONE_PIN(P9_12, gpio_pu,    P9_12(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_12, gpio_pd,    P9_12(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_15, default,    P9_15(PIN_INPUT, 7))
+	BONE_PIN(P9_15, pruout,     P9_15(PIN_OUTPUT, 0))
+	BONE_PIN(P9_15, pruin,      P9_15(PIN_INPUT, 1))
+	BONE_PIN(P9_15, gpio,       P9_15(PIN_OUTPUT, 7))
+	BONE_PIN(P9_15, gpio_pu,    P9_15(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_15, gpio_pd,    P9_15(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_19, default,   P9_19A(PIN_INPUT, 7) P9_19B(PIN_INPUT, 7))
+	BONE_PIN(P9_19, pruout,    P9_19A(PIN_INPUT, 7) P9_19B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_19, pruin,     P9_19A(PIN_INPUT, 7) P9_19B(PIN_INPUT, 1))
+	BONE_PIN(P9_19, gpio,      P9_19A(PIN_INPUT, 7) P9_19B(PIN_INPUT, 7))
+	BONE_PIN(P9_19, gpio_pu,   P9_19A(PIN_INPUT, 7) P9_19B(PIN_INPUT, 7))
+	BONE_PIN(P9_19, gpio_pd,   P9_19A(PIN_INPUT, 7) P9_19B(PIN_INPUT, 7))
+
+	BONE_PIN(P9_20, default,   P9_20A(PIN_INPUT, 7) P9_20B(PIN_INPUT, 7))
+	BONE_PIN(P9_20, pruout,    P9_20A(PIN_INPUT, 7) P9_20B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_20, pruin,     P9_20A(PIN_INPUT, 7) P9_20B(PIN_INPUT, 1))
+	BONE_PIN(P9_20, gpio,      P9_20A(PIN_INPUT, 7) P9_20B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_20, gpio_pu,   P9_20A(PIN_INPUT, 7) P9_20B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_20, gpio_pd,   P9_20A(PIN_INPUT, 7) P9_20B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_24, default,   P9_24A(PIN_INPUT, 7) P9_24B(PIN_INPUT, 7))
+	BONE_PIN(P9_24, pruout,    P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_24, pruin,     P9_24A(PIN_INPUT, 7) P9_24B(PIN_INPUT, 1))
+	BONE_PIN(P9_24, gpio,      P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_24, gpio_pu,   P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_24, gpio_pd,   P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_26, default,   P9_26A(PIN_INPUT, 7) P9_26B(PIN_INPUT, 7))
+	BONE_PIN(P9_26, pruout,    P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_26, pruin,     P9_26A(PIN_INPUT, 7) P9_26B(PIN_INPUT, 1))
+	BONE_PIN(P9_26, gpio,      P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_26, gpio_pu,   P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_26, gpio_pd,   P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_27, default,   P9_27A(PIN_INPUT, 7) P9_27B(PIN_INPUT, 7))
+	BONE_PIN(P9_27, pruout,    P9_27A(PIN_OUTPUT, 0) P9_27B(PIN_INPUT, 7))
+	BONE_PIN(P9_27, pruin,     P9_27A(PIN_INPUT, 1) P9_27B(PIN_INPUT, 7))
+	BONE_PIN(P9_27, eqep0_b,   P9_27A(PIN_INPUT, 7) P9_27B(PIN_OUTPUT, 5))
+	BONE_PIN(P9_27, gpio,      P9_27A(PIN_INPUT, 7) P9_27B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_27, gpio_pu,   P9_27A(PIN_INPUT, 7) P9_27B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_27, gpio_pd,   P9_27A(PIN_INPUT, 7) P9_27B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_28, default,   P9_28A(PIN_INPUT, 7) P9_28B(PIN_INPUT, 7))
+	BONE_PIN(P9_28, pruout,    P9_28A(PIN_INPUT, 7) P9_28B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_28, pruin,     P9_28A(PIN_INPUT, 7) P9_28B(PIN_INPUT, 1))
+	BONE_PIN(P9_28, gpio,      P9_28A(PIN_INPUT, 7) P9_28B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_28, gpio_pu,   P9_28A(PIN_INPUT, 7) P9_28B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_28, gpio_pd,   P9_28A(PIN_INPUT, 7) P9_28B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_29, default,   P9_29A(PIN_INPUT, 7) P9_29B(PIN_INPUT, 7))
+	BONE_PIN(P9_29, pruout,    P9_29A(PIN_INPUT, 7) P9_29B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_29, pruin,     P9_29A(PIN_INPUT, 7) P9_29B(PIN_INPUT, 1))
+	BONE_PIN(P9_29, gpio,      P9_29A(PIN_INPUT, 7) P9_29B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_29, gpio_pu,   P9_29A(PIN_INPUT, 7) P9_29B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_29, gpio_pd,   P9_29A(PIN_INPUT, 7) P9_29B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_30, default,   P9_30A(PIN_INPUT, 7) P9_30B(PIN_INPUT, 7))
+	BONE_PIN(P9_30, pruout,    P9_30A(PIN_INPUT, 7) P9_30B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_30, pruin,     P9_30A(PIN_INPUT, 7) P9_30B(PIN_INPUT, 1))
+	BONE_PIN(P9_30, gpio,      P9_30A(PIN_INPUT, 7) P9_30B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_30, gpio_pu,   P9_30A(PIN_INPUT, 7) P9_30B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_30, gpio_pd,   P9_30A(PIN_INPUT, 7) P9_30B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_33, default,   P9_33B(PIN_INPUT, 7))
+	BONE_PIN(P9_33, pruout,    P9_33B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_33, pruin,     P9_33B(PIN_INPUT, 1))
+	BONE_PIN(P9_33, gpio,      P9_33B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_33, gpio_pu,   P9_33B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_33, gpio_pd,   P9_33B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_35, default,   P9_35B(PIN_INPUT, 7))
+	BONE_PIN(P9_35, pruout,    P9_35B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_35, pruin,     P9_35B(PIN_INPUT, 1))
+	BONE_PIN(P9_35, gpio,      P9_35B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_35, gpio_pu,   P9_35B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_35, gpio_pd,   P9_35B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_36, default,   P9_36B(PIN_INPUT, 7))
+	BONE_PIN(P9_36, pruout,    P9_36B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_36, pruin,     P9_36B(PIN_INPUT, 1))
+	BONE_PIN(P9_36, gpio,      P9_36B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_36, gpio_pu,   P9_36B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_36, gpio_pd,   P9_36B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_37, default,   P9_37B(PIN_INPUT, 7))
+	BONE_PIN(P9_37, pruout,    P9_37B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_37, pruin,     P9_37B(PIN_INPUT, 1))
+	BONE_PIN(P9_37, gpio,      P9_37B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_37, gpio_pu,   P9_37B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_37, gpio_pd,   P9_37B(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P9_37, uart4_rx,  P9_37B(PIN_INPUT, 8))
+
+	BONE_PIN(P9_38, default,   P9_38B(PIN_INPUT, 7))
+	BONE_PIN(P9_38, pruout,    P9_38B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_38, pruin,     P9_38B(PIN_INPUT, 1))
+	BONE_PIN(P9_38, gpio,      P9_38B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_38, gpio_pu,   P9_38B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_38, gpio_pd,   P9_38B(PIN_OUTPUT_PULLDOWN, 7))
+	BONE_PIN(P9_38, uart4_tx,  P9_38B(PIN_OUTPUT, 8))
+
+	BONE_PIN(P9_39, default,   P9_39B(PIN_INPUT, 7))
+	BONE_PIN(P9_39, pruout,    P9_39B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_39, pruin,     P9_39B(PIN_INPUT, 1))
+	BONE_PIN(P9_39, gpio,      P9_39B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_39, gpio_pu,   P9_39B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_39, gpio_pd,   P9_39B(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_42, default,   P9_42A(PIN_INPUT, 7) P9_42B(PIN_INPUT, 7))
+	BONE_PIN(P9_42, pruout,    P9_42A(PIN_INPUT, 7) P9_42B(PIN_OUTPUT, 0))
+	BONE_PIN(P9_42, pruin,     P9_42A(PIN_INPUT, 7) P9_42B(PIN_INPUT, 1))
+	BONE_PIN(P9_42, eqep0_a,   P9_42A(PIN_OUTPUT, 5) P9_42B(PIN_INPUT, 7))
+	BONE_PIN(P9_42, gpio,      P9_42A(PIN_INPUT, 7) P9_42B(PIN_OUTPUT, 7))
+	BONE_PIN(P9_42, gpio_pu,   P9_42A(PIN_INPUT, 7) P9_42B(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_42, gpio_pd,   P9_42A(PIN_INPUT, 7) P9_42B(PIN_OUTPUT_PULLDOWN, 7))
+
 	pcie1_rst_pins_default: pcie1-rst-pins-default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x5c, PIN_INPUT, 7) /* (AG23) PRG1_PRU1_GPO1.GPIO0_22 */
@@ -646,13 +831,6 @@
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x16c, PIN_OUTPUT, 6) /* (U28) RGMII5_TD0.EHRPWM1_A */
 			J721E_IOPAD(0x170, PIN_OUTPUT, 6) /* (U29) RGMII5_TXC.EHRPWM1_B */
-		>;
-	};
-
-	ehrpwm2_pins_default: ehrpwm2_pins_default {
-		pinctrl-single,pins = <
-			J721E_IOPAD(0x178, PIN_OUTPUT, 6) /* (U27) RGMII5_RD3.EHRPWM2_A */
-			J721E_IOPAD(0x17c, PIN_OUTPUT, 6) /* (U24) RGMII5_RD2.EHRPWM2_B */
 		>;
 	};
 
@@ -699,7 +877,7 @@
 			J721E_WKUP_IOPAD(0x138, PIN_INPUT, 0) /* (K28) MCU_ADC0_AIN2 */
 			J721E_WKUP_IOPAD(0x13c, PIN_INPUT, 0) /* (L28) MCU_ADC0_AIN3 */
 			J721E_WKUP_IOPAD(0x140, PIN_INPUT, 0) /* (K24) MCU_ADC0_AIN4 */
-			J721E_WKUP_IOPAD(0x144, PIN_INPUT, 0) /* (K27) MCU_ADC0_AIN5 */
+/*			J721E_WKUP_IOPAD(0x144, PIN_INPUT, 0)*/ /* (K27) MCU_ADC0_AIN5 */
 			J721E_WKUP_IOPAD(0x148, PIN_INPUT, 0) /* (K29) MCU_ADC0_AIN6 */
 		>;
 	};
@@ -762,6 +940,14 @@
 			J721E_WKUP_IOPAD(0x88, PIN_INPUT, 0) /* (E23) MCU_MDIO0_MDIO */
 		>;
 	};
+
+	/* Full P9 header mode definitions */
+	BONE_PIN(P9_36A, default,   P9_36A(PIN_INPUT, 7))
+	BONE_PIN(P9_36A, pruout,    P9_36A(PIN_OUTPUT, 0))
+	BONE_PIN(P9_36A, pruin,     P9_36A(PIN_INPUT, 1))
+	BONE_PIN(P9_36A, gpio,      P9_36A(PIN_OUTPUT, 7))
+	BONE_PIN(P9_36A, gpio_pu,   P9_36A(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_36A, gpio_pd,   P9_36A(PIN_OUTPUT_PULLDOWN, 7))
 };
 
 &wkup_uart0 {
@@ -773,9 +959,18 @@
 	power-domains = <&k3_pds 146 TI_SCI_PD_SHARED>;
 };
 
+&main_uart2 {
+	power-domains = <&k3_pds 279 TI_SCI_PD_SHARED>;
+};
+
 &main_uart3 {
 	/* UART not brought out */
 	status = "disabled";
+};
+
+&main_uart4 {
+	/* UART not brought out */
+	power-domains = <&k3_pds 281 TI_SCI_PD_SHARED>;
 };
 
 &main_uart5 {
@@ -794,8 +989,7 @@
 };
 
 &main_uart8 {
-	/* UART not brought out */
-	status = "disabled";
+	power-domains = <&k3_pds 154 TI_SCI_PD_SHARED>;
 };
 
 &main_uart9 {
@@ -806,70 +1000,68 @@
 &main_gpio0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <
-		&P8_03_pruout_pin
+		&P8_03_gpio_pin
 		&P8_04_pruout_pin
-		&P8_05_pruout_pin
-		&P8_06_pruout_pin
-		&P8_07_pruout_pin
-		&P8_08_pruout_pin
-		&P8_09_pruout_pin
-		&P8_10_pruout_pin
+		&P8_05_default_pin
+		&P8_06_gpio_pin
+		&P8_07_default_pin
+		&P8_08_gpio_pin
+		&P8_09_default_pin
+		&P8_10_gpio_pin
 		&P8_11_pruout_pin
 		&P8_12_pruout_pin
-		&P8_13_pwm_pin
+		&P8_13_default_pin
 		&P8_14_pruout_pin
-		&P8_15_pruout_pin
-		&P8_16_pruout_pin
-		&P8_17_pruout_pin
-		&P8_18_pruout_pin
-		&P8_19_pwm_pin
+		&P8_15_default_pin
+		&P8_16_gpio_pin
+		&P8_17_gpio_pin
+		&P8_18_gpio_pin
+		&P8_19_gpio_pin
 		&P8_20_pruout_pin
 		&P8_21_pruout_pin
-		&P8_22_pruout_pin
+		&P8_22_uart2_rx_pin
 		&P8_23_pruout_pin
-		&P8_24_pruout_pin
+		&P8_24_gpio_pin
 		&P8_25_pruout_pin
 		&P8_26_pruout_pin
 		&P8_27_pruout_pin
-		&P8_28_pruout_pin
-		&P8_29_pruout_pin
-		&P8_30_pruout_pin
-		&P8_31_pruout_pin
-		&P8_32_pruout_pin
-		&P8_33_pruout_pin
-		&P8_34_pruout_pin
-		&P8_35_pruout_pin
+		&P8_28_uart8_rx_pin
+		&P8_29_uart8_tx_pin
+		&P8_30_gpio_pin
+		&P8_31_default_pin
+		&P8_32_gpio_pin
+		&P8_33_eqep1_b_pin
+		&P8_34_uart2_tx_pin
+		&P8_35_eqep1_a_pin
 		&P8_36_pruout_pin
 		&P8_37_pruout_pin
-		&P8_38_pruout_pin
+		&P8_38_gpio_pin
 		&P8_39_pruout_pin
-		&P8_40_pruout_pin
+		&P8_40_gpio_pin
 		&P8_41_pruout_pin
-		&P8_42_pruout_pin
+		&P8_42_gpio_pin
 		&P8_43_pruout_pin
-		&P8_44_pruout_pin
+		&P8_44_gpio_pin
 		&P8_45_pruout_pin
 		&P8_46_pruout_pin
-/*
-		&P9_09_pruout_pin
-		&P9_10_pruout_pin
-		&P9_11_pruout_pin
+
 		&P9_12_pruout_pin
-		&P9_13_pruout_pin
-		&P9_14_pwm_pin
 		&P9_15_pruout_pin
-		&P9_16_pwm_pin
-		&P9_17_pruout_pin
-		&P9_18_pruout_pin
 		&P9_19_pruout_pin
 		&P9_20_pruout_pin
-		&P9_21_pwm_pin
-		&P9_22_pwm_pin
-		&P9_23_pruout_pin
-		&P9_24_pruout_pin
-		&P9_25_gpio_pin
-*/
-/*		&main_p9_pins_default*/
+		&P9_24_gpio_pin
+		&P9_26_gpio_pin
+		&P9_27_eqep0_b_pin
+		&P9_28_default_pin
+		&P9_29_default_pin
+		&P9_30_default_pin
+		&P9_33_default_pin
+		&P9_35_default_pin
+		&P9_36_pruout_pin
+		&P9_37_uart4_rx_pin
+		&P9_38_uart4_tx_pin
+		&P9_39_default_pin
+		&P9_42_eqep0_a_pin
 	>;
 };
 
@@ -899,7 +1091,13 @@
 
 &wkup_gpio0 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&mcu_adc0_pins_default &mcu_adc1_pins_default &mikro_bus_pins_default>;
+	pinctrl-0 = <
+		&mcu_adc0_pins_default
+		&mcu_adc1_pins_default
+		&mikro_bus_pins_default
+
+		&P9_36A_default_pin
+	>;
 };
 
 &wkup_gpio1 {
@@ -1080,31 +1278,38 @@
 	};
 };
 
+&main_i2c6 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c6_pins_default>;
+	clock-frequency = <400000>;
+};
+
 &main_spi6 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_spi6_pins_default>;
-	ti,spi-num-cs = <2>;
+	ti,spi-num-cs = <3>;
 	ti,pindir-d0-out-d1-in;
+	cs-gpios = <&main_gpio0 28 GPIO_ACTIVE_LOW>,
+		<&main_gpio0 10 GPIO_ACTIVE_LOW>,
+		<&main_gpio0 127 GPIO_ACTIVE_LOW>;
 
-	spidev0: spidev@0{
-		compatible = "spidev";
+	pressure@0 {
+		compatible = "bosch,bmp280";
 		reg = <0>;	/* CE0 */
-		#address-cells = <1>;
-		#size-cells = <0>;
-		spi-max-frequency = <125000000>;
+		spi-max-frequency = <5000000>;
 	};
 
-	spidev1: spidev@1{
-		compatible = "spidev";
+	imu@1 {
+		compatible = "st,lsm6ds3tr-c";
 		reg = <1>;	/* CE1 */
-		#address-cells = <1>;
-		#size-cells = <0>;
-		spi-max-frequency = <125000000>;
+		spi-max-frequency = <5000000>;
 	};
-};
 
-&main_i2c6 {
-	status = "disabled";
+	magn@2 {
+		compatible = "bosch,bmm150_magn";
+		reg = <2>;	/* CE2 */
+		spi-max-frequency = <5000000>;
+	};
 };
 
 &mcu_cpsw {
@@ -1290,11 +1495,6 @@
 	status = "disabled";
 };
 
-/* uart2 assigned to cpsw9g eth-switch fw running on remote CPU core */
-&main_uart2 {
-	status = "disabled";
-};
-
 &mcu_mcan0 {
 	status = "disabled";
 };
@@ -1407,4 +1607,63 @@
 
 &csi1_port4 {
 	status = "disabled";
+};
+
+&cbass_main {
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	eqep0: qep@3200000 {
+		compatible = "ti,am3352-eqep";
+		reg = <0 0x3200000 0 0x100>;
+		power-domains = <&k3_pds 94 TI_SCI_PD_EXCLUSIVE>;
+		clocks = <&k3_clks 94 0>;
+		clock-names = "eqep0-ficlk";
+		interrupts = <GIC_SPI 322 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "eqep0";
+		symlink = "bone/eQEP0"; /* A - P9_42, B - P9_27 */
+
+		count_mode = <0>;
+		swap_input = <0>;
+		invert_qa = <1>;
+		invert_qb = <1>;
+		invert_qi = <0>;
+		invert_qs = <0>;
+	};
+
+	eqep1: qep@3210000 {
+		compatible = "ti,am3352-eqep";
+		reg = <0 0x3210000 0 0x100>;
+		power-domains = <&k3_pds 95 TI_SCI_PD_EXCLUSIVE>;
+		clocks = <&k3_clks 95 0>;
+		clock-names = "eqep1-ficlk";
+		interrupts = <GIC_SPI 323 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "eqep1";
+		symlink = "bone/eQEP1"; /* A - P8_35, B - P8_33 */
+
+		count_mode = <0>;
+		swap_input = <0>;
+		invert_qa = <1>;
+		invert_qb = <1>;
+		invert_qi = <0>;
+		invert_qs = <0>;
+	};
+
+	eqep2: qep@3220000 {
+		status = "disabled";
+		compatible = "ti,am3352-eqep";
+		reg = <0 0x3220000 0 0x100>;
+		power-domains = <&k3_pds 96 TI_SCI_PD_EXCLUSIVE>;
+		clocks = <&k3_clks 96 0>;
+		clock-names = "eqep2-ficlk";
+		interrupts = <GIC_SPI 324 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "eqep2";
+
+		count_mode = <0>;
+		swap_input = <0>;
+		invert_qa = <1>;
+		invert_qb = <1>;
+		invert_qi = <0>;
+		invert_qs = <0>;
+	};
 };
