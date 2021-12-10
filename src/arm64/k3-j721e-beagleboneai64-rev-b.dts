@@ -220,7 +220,7 @@
 			J721E_IOPAD(0x244, PIN_INPUT, 0) /* (R25) MMC1_DAT2 */
 			J721E_IOPAD(0x240, PIN_INPUT, 0) /* (R26) MMC1_DAT3 */
 			J721E_IOPAD(0x258, PIN_INPUT, 0) /* (P23) MMC1_SDCD */
-			J721E_IOPAD(0x25c, PIN_INPUT, 0) /* (R28) MMC1_SDWP */
+			/*J721E_IOPAD(0x25c, PIN_INPUT, 0)*/ /* (R28) MMC1_SDWP */
 		>;
 	};
 
@@ -239,14 +239,15 @@
 	main_usbss0_pins_default: main-usbss0-pins-default {
 		pinctrl-single,pins = <
 			/*J721E_IOPAD(0x290, PIN_OUTPUT, 0)*/ /* (U6) USB0_DRVVBUS */
-			J721E_IOPAD(0x210, PIN_INPUT, 7) /* (W3) MCAN1_RX.GPIO1_3 */
+			J721E_IOPAD(0x210, PIN_INPUT, 7) /* (W3) MCAN1_RX.GPIO1_3 -- USBC_DIR */
+			J721E_IOPAD(0x214, PIN_INPUT, 7) /* (V4) MCAN1_TX.GPIO1_4 -- USBC_INT */
 		>;
 	};
 
 	main_usbss1_pins_default: main-usbss1-pins-default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x290, PIN_OUTPUT, 1) /* (U6) USB0_DRVVBUS.USB1_DRVVBUS */
-			J721E_IOPAD(0x214, PIN_INPUT, 7) /* (V4) MCAN1_TX.GPIO1_4 */
+			J721E_IOPAD(0x25c, PIN_INPUT, 7) /* (R28) MMC1_SDWP.GPIO1_22 -- dummy dir*/
 		>;
 	};
 
@@ -942,7 +943,7 @@
 };
 
 &serdes_wiz2 {
-	typec-dir-gpios = <&main_gpio1 4 GPIO_ACTIVE_LOW>;
+	typec-dir-gpios = <&main_gpio1 22 GPIO_ACTIVE_LOW>; /* dummy dir */
 	typec-dir-debounce-ms = <700>;	/* TUSB321, tCCB_DEFAULT 133 ms */
 };
 
@@ -957,7 +958,7 @@
 };
 
 &serdes_wiz3 {
-	typec-dir-gpios = <&main_gpio1 3 GPIO_ACTIVE_HIGH>;
+	typec-dir-gpios = <&main_gpio1 3 GPIO_ACTIVE_LOW>;
 	typec-dir-debounce-ms = <700>;	/* TUSB321, tCCB_DEFAULT 133 ms */
 };
 
@@ -978,7 +979,7 @@
 };
 
 &usb0 {
-	dr_mode = "host";
+	dr_mode = "otg";
 	maximum-speed = "super-speed";
 	phys = <&serdes3_usb_link>;
 	phy-names = "cdns3,usb3-phy";
