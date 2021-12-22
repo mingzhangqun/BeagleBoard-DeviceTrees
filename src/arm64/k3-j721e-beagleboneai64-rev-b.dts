@@ -220,7 +220,7 @@
 			J721E_IOPAD(0x244, PIN_INPUT, 0) /* (R25) MMC1_DAT2 */
 			J721E_IOPAD(0x240, PIN_INPUT, 0) /* (R26) MMC1_DAT3 */
 			J721E_IOPAD(0x258, PIN_INPUT, 0) /* (P23) MMC1_SDCD */
-			/*J721E_IOPAD(0x25c, PIN_INPUT, 0)*/ /* (R28) MMC1_SDWP */
+			J721E_IOPAD(0x25c, PIN_INPUT, 0) /* (R28) MMC1_SDWP */
 		>;
 	};
 
@@ -253,7 +253,7 @@
 	main_usbss1_pins_default: main-usbss1-pins-default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x290, PIN_OUTPUT, 1) /* (U6) USB0_DRVVBUS.USB1_DRVVBUS */
-			J721E_IOPAD(0x25c, PIN_INPUT, 7) /* (R28) MMC1_SDWP.GPIO1_22 -- dummy dir*/
+			/*J721E_IOPAD(0x25c, PIN_INPUT, 7)*/ /* (R28) MMC1_SDWP.GPIO1_22 -- dummy dir*/
 		>;
 	};
 
@@ -940,26 +940,28 @@
 };
 
 &serdes_ln_ctrl {
-	idle-states = <J721E_SERDES0_LANE0_PCIE0_LANE0>, <J721E_SERDES0_LANE1_PCIE0_LANE1>,
+	idle-states = <J721E_SERDES0_LANE0_IP4_UNUSED>, <J721E_SERDES0_LANE1_IP4_UNUSED>,
 		      <J721E_SERDES1_LANE0_PCIE1_LANE0>, <J721E_SERDES1_LANE1_PCIE1_LANE1>,
-		      <J721E_SERDES2_LANE0_USB3_1_SWAP>, <J721E_SERDES2_LANE1_USB3_1>,
+		      <J721E_SERDES2_LANE0_IP1_UNUSED>, <J721E_SERDES2_LANE1_USB3_1>,
 		      <J721E_SERDES3_LANE0_USB3_0_SWAP>, <J721E_SERDES3_LANE1_USB3_0>,
 		      <J721E_SERDES4_LANE0_EDP_LANE0>, <J721E_SERDES4_LANE1_EDP_LANE1>,
 		      <J721E_SERDES4_LANE2_EDP_LANE2>, <J721E_SERDES4_LANE3_EDP_LANE3>;
 };
 
+#if 0
 &serdes_wiz2 {
 	typec-dir-gpios = <&main_gpio1 22 GPIO_ACTIVE_LOW>; /* dummy dir */
 	typec-dir-debounce-ms = <700>;	/* TUSB321, tCCB_DEFAULT 133 ms */
 };
+#endif
 
 &serdes2 {
-	serdes2_usb_link: phy@0 {
-		reg = <0>;
-		cdns,num-lanes = <2>;
+	serdes2_usb_link: phy@1 {
+		reg = <1>;
+		cdns,num-lanes = <1>;
 		#phy-cells = <0>;
 		cdns,phy-type = <PHY_TYPE_USB3>;
-		resets = <&serdes_wiz2 1>, <&serdes_wiz2 2>;
+		resets = <&serdes_wiz2 2>;
 	};
 };
 
