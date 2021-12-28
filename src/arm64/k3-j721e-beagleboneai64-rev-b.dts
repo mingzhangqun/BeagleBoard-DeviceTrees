@@ -984,6 +984,7 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_usbss0_pins_default>;
 	ti,vbus-divider;
+	ti,usb2-only;
 };
 
 &usb0 {
