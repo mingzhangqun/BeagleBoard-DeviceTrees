@@ -1037,7 +1037,9 @@
 
 &main_i2c1 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&main_i2c1_pins_default &csi1_gpio_pins_default>;
+	pinctrl-0 = <&main_i2c1_pins_default
+				&csi1_gpio_pins_default
+				&tusb322_pins_default>;
 	clock-frequency = <400000>;
 
 	ov5640_1: camera1@3c {
@@ -1061,7 +1063,6 @@
 	tusb322@47 {
 		compatible = "ti,tusb322";
 		reg = <0x47>;
-		pinctrl-0 = <&tusb322_pins_default>;
 		interrupt-parent = <&main_gpio1>;
 		interrupts = <4 IRQ_TYPE_EDGE_FALLING>;
 		interrupt-controller;
