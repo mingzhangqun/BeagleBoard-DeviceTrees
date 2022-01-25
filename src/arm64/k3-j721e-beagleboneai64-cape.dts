@@ -698,6 +698,13 @@
 	BONE_PIN(P9_12, gpio_pu,    P9_12(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_12, gpio_pd,    P9_12(PIN_OUTPUT_PULLDOWN, 7))
 
+	BONE_PIN(P9_13, default,    P9_13(PIN_INPUT, 7))
+	BONE_PIN(P9_13, pruout,     P9_13(PIN_OUTPUT, 0))
+	BONE_PIN(P9_13, pruin,      P9_13(PIN_INPUT, 1))
+	BONE_PIN(P9_13, gpio,       P9_13(PIN_OUTPUT, 7))
+	BONE_PIN(P9_13, gpio_pu,    P9_13(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_13, gpio_pd,    P9_13(PIN_OUTPUT_PULLDOWN, 7))
+
 	BONE_PIN(P9_15, default,    P9_15(PIN_INPUT, 7))
 	BONE_PIN(P9_15, pruout,     P9_15(PIN_OUTPUT, 0))
 	BONE_PIN(P9_15, pruin,      P9_15(PIN_INPUT, 1))
@@ -722,6 +729,7 @@
 	BONE_PIN(P9_24, default,   P9_24A(PIN_INPUT, 7) P9_24B(PIN_INPUT, 7))
 	BONE_PIN(P9_24, pruout,    P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT, 0))
 	BONE_PIN(P9_24, pruin,     P9_24A(PIN_INPUT, 7) P9_24B(PIN_INPUT, 1))
+	BONE_PIN(P9_24, i2c4_scl,  P9_24A(PIN_INPUT_PULLUP, 2) P9_24B(PIN_INPUT, 7))
 	BONE_PIN(P9_24, gpio,      P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT, 7))
 	BONE_PIN(P9_24, gpio_pu,   P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_24, gpio_pd,   P9_24A(PIN_INPUT, 7) P9_24B(PIN_OUTPUT_PULLDOWN, 7))
@@ -729,6 +737,7 @@
 	BONE_PIN(P9_26, default,   P9_26A(PIN_INPUT, 7) P9_26B(PIN_INPUT, 7))
 	BONE_PIN(P9_26, pruout,    P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT, 0))
 	BONE_PIN(P9_26, pruin,     P9_26A(PIN_INPUT, 7) P9_26B(PIN_INPUT, 1))
+	BONE_PIN(P9_26, i2c4_sda,  P9_26A(PIN_INPUT_PULLUP, 2) P9_26B(PIN_INPUT, 7))
 	BONE_PIN(P9_26, gpio,      P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT, 7))
 	BONE_PIN(P9_26, gpio_pu,   P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_26, gpio_pd,   P9_26A(PIN_INPUT, 7) P9_26B(PIN_OUTPUT_PULLDOWN, 7))
@@ -1046,11 +1055,12 @@
 		&P8_46_pruout_pin
 
 		&P9_12_pruout_pin
+		&P9_13_pruout_pin
 		&P9_15_pruout_pin
 		&P9_19_pruout_pin
 		&P9_20_pruout_pin
-		&P9_24_gpio_pin
-		&P9_26_gpio_pin
+		&P9_24_i2c4_scl_pin
+		&P9_26_i2c4_sda_pin
 		&P9_27_eqep0_b_pin
 		&P9_28_default_pin
 		&P9_29_default_pin
@@ -1251,6 +1261,11 @@
 &main_i2c3 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_i2c3_pins_default>;
+	clock-frequency = <400000>;
+};
+
+&main_i2c4 {
+	pinctrl-names = "default";
 	clock-frequency = <400000>;
 };
 
