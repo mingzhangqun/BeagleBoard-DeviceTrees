@@ -50,7 +50,7 @@
 	gpio_leds: gpio-leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
-		pinctrl-0 = <&led_pins_default &cape_led_pins_default>;
+		pinctrl-0 = <&led_pins_default>;
 
 		usr_led0: usr_led0 {
 			label = "beaglebone:green:usr0";
@@ -96,10 +96,16 @@
 			gpios = <&main_gpio0 94 GPIO_ACTIVE_HIGH>;
 		};
 
+		cape_led2: cape_led2 {
+			label = "beaglebone:green:cape2";
+			linux,default-trigger = "default-off";
+			gpios = <&main_gpio0 4 GPIO_ACTIVE_HIGH>;
+		};
+
 		cape_led3: cape_led3 {
 			label = "beaglebone:green:cape3";
 			linux,default-trigger = "default-off";
-			gpios = <&main_gpio0 1 GPIO_ACTIVE_HIGH>;
+			gpios = <&main_gpio0 89 GPIO_ACTIVE_HIGH>;
 		};
 	};
 
@@ -237,6 +243,7 @@
 		>;
 	};
 
+#if 0
 	cape_led_pins_default: cape_led_pins_default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x178, PIN_OUTPUT, 7) /* (U27) RGMII5_RD3.GPIO0_93 -- LED1 */
@@ -244,6 +251,7 @@
 			J721E_IOPAD(0x4, PIN_OUTPUT, 7) /* (AC23) PRG1_PRU0_GPO0.GPIO0_1 -- LED4 */
 		>;
 	};
+#endif
 
 	led_pins_default: led-pins-default {
 		pinctrl-single,pins = <
@@ -446,7 +454,6 @@
 	BONE_PIN(P8_12, gpio_pd,   P8_12(PIN_OUTPUT_PULLDOWN, 7))
 
 	BONE_PIN(P8_13, default,   P8_13(PIN_INPUT, 7))
-	//BONE_PIN(P8_13, i2c,       P8_13(PIN_OUTPUT_PULLUP, 2))
 	BONE_PIN(P8_13, pwm,       P8_13(PIN_OUTPUT, 6))
 	BONE_PIN(P8_13, gpio,      P8_13(PIN_OUTPUT, 7))
 	BONE_PIN(P8_13, gpio_pu,   P8_13(PIN_OUTPUT_PULLUP, 7))
@@ -705,12 +712,22 @@
 	BONE_PIN(P9_13, gpio_pu,    P9_13(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_13, gpio_pd,    P9_13(PIN_OUTPUT_PULLDOWN, 7))
 
+	BONE_PIN(P9_14, default,    P9_14(PIN_INPUT, 7))
+	BONE_PIN(P9_14, gpio,       P9_14(PIN_OUTPUT, 7))
+	BONE_PIN(P9_14, gpio_pu,    P9_14(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_14, gpio_pd,    P9_14(PIN_OUTPUT_PULLDOWN, 7))
+
 	BONE_PIN(P9_15, default,    P9_15(PIN_INPUT, 7))
 	BONE_PIN(P9_15, pruout,     P9_15(PIN_OUTPUT, 0))
 	BONE_PIN(P9_15, pruin,      P9_15(PIN_INPUT, 1))
 	BONE_PIN(P9_15, gpio,       P9_15(PIN_OUTPUT, 7))
 	BONE_PIN(P9_15, gpio_pu,    P9_15(PIN_OUTPUT_PULLUP, 7))
 	BONE_PIN(P9_15, gpio_pd,    P9_15(PIN_OUTPUT_PULLDOWN, 7))
+
+	BONE_PIN(P9_16, default,    P9_16(PIN_INPUT, 7))
+	BONE_PIN(P9_16, gpio,       P9_16(PIN_OUTPUT, 7))
+	BONE_PIN(P9_16, gpio_pu,    P9_16(PIN_OUTPUT_PULLUP, 7))
+	BONE_PIN(P9_16, gpio_pd,    P9_16(PIN_OUTPUT_PULLDOWN, 7))
 
 	BONE_PIN(P9_19, default,   P9_19A(PIN_INPUT, 7) P9_19B(PIN_INPUT, 7))
 	BONE_PIN(P9_19, pruout,    P9_19A(PIN_INPUT, 7) P9_19B(PIN_OUTPUT, 0))
@@ -832,7 +849,7 @@
 	ehrpwm0_pins_default: ehrpwm0_pins_default {
 		pinctrl-single,pins = <
 			J721E_IOPAD(0x164, PIN_OUTPUT, 6) /* (V29) RGMII5_TD2.EHRPWM0_A */
-			J721E_IOPAD(0x168, PIN_OUTPUT, 6) /* (V27) RGMII5_TD1.EHRPWM0_B */
+/*			J721E_IOPAD(0x168, PIN_OUTPUT, 6)*/ /* (V27) RGMII5_TD1.EHRPWM0_B */
 		>;
 	};
 
@@ -1019,7 +1036,7 @@
 		&P8_10_gpio_pin
 		&P8_11_pruout_pin
 		&P8_12_pruout_pin
-		&P8_13_default_pin
+		&P8_13_gpio_pin
 		&P8_14_pruout_pin
 		&P8_15_default_pin
 		&P8_16_gpio_pin
@@ -1056,7 +1073,9 @@
 
 		&P9_12_pruout_pin
 		&P9_13_pruout_pin
+		&P9_14_gpio_pin
 		&P9_15_pruout_pin
+		&P9_16_gpio_pin
 		&P9_19_pruout_pin
 		&P9_20_pruout_pin
 		&P9_24_i2c4_scl_pin
